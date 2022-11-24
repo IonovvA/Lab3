@@ -18,9 +18,9 @@ public:
         {
             throw "Stack size <= 0";
         }
-        top(-1);
-        size(_size);
-        pMem(new T[size]);
+        top = -1;
+        size = _size;
+        pMem = new T[size];
     }
 
     TStack(const TStack<T>& p)
@@ -88,6 +88,19 @@ public:
         T v = arr[top];
         top--;
         return v;
+    }
+
+    friend ostream& operator<<(ostream& out, TStack<T>& st) 
+    {
+        if (st.IsEmpty()) 
+        {
+            out << "Stack is empty" << endl;
+            return out;
+        }
+        for (int i = st.top; i >= 0; i--) 
+            out << st.pMem[i];
+        out << endl;
+        return out;
     }
 
     ~TStack()

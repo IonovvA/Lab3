@@ -6,13 +6,11 @@ using namespace std;
 template <typename T>
 class TQueue
 {
-protected:
+private:
     size_t size;
     size_t start;
     size_t end;
     T* arr;
- 
-    size_t next(size_t i) { return ((i + 1) % size); }
 
 public:
     TQueue(size_t _size = 1)
@@ -23,15 +21,7 @@ public:
         start = next(end);
     }
 
-    TQueue(const TQueue<T>& q) 
-    {
-        size = q.size;
-        end = q.end;
-        start = q.start;
-        arr = new T[size];
-        for (int i = start; i < next(end); i++)
-            arr[i] = q.arr[i];
-    }
+    size_t next(size_t i) { return ((i + 1) % size); }
 
     size_t Size() 
     {
@@ -60,18 +50,19 @@ public:
     {
         if (Is_Full())
         {
-            T* arr2 = new T[size * 2];
-            size_t index = 1;
-            for (size_t i = start; i < next(end); i = next(i))
-            {
-                arr2[index] = arr[i];
+            int new_size = size * 2;
+            T* tmp = new T[new_size];
+            int index = 1;
+            for (int i = start; i != next(end); i = next(i)) {
+                tmp[index] = arr[i];
                 index++;
             }
-            delete[] arr;
-            arr = arr2;
+            if (size)
+                delete[]arr;
+            arr = tmp;
             end = size - 1;
-            size *= size;
             start = 1;
+            size = new_size;
         }
         end = next(end);
         arr[end] = x;
@@ -91,6 +82,18 @@ public:
         T v = arr[start];
         start = next(start);
         return v;
+    }
+
+    friend ostream& operator<<(ostream& out, TQueue<T>& q) {
+        if (q.Is_Empty()) 
+        {
+            out << "Queue is empty!" << endl;
+            return out;
+        }
+        for (int i = q.start; i != q.next(q.end); i = q.next(i)) 
+            out << q.arr[i];
+        out << endl;
+        return out;
     }
 
     ~TQueue() 
