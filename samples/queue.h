@@ -12,6 +12,8 @@ private:
     size_t end;
     T* arr;
 
+    size_t next(size_t i) { return ((i + 1) % size); }
+
 public:
     TQueue(size_t _size = 1)
     {
@@ -21,7 +23,30 @@ public:
         start = next(end);
     }
 
-    size_t next(size_t i) { return ((i + 1) % size); }
+    TQueue(const TQueue<T>& q) 
+    {
+        size = q.size;
+        end = q.end;
+        start = q.start;
+        arr = new T[size];
+        for (int i = start; i != next(end); i++) 
+            arr[i] = q.arr[i];
+    }
+
+    TQueue<T>& operator = (const TQueue<T>& q)
+    {
+        if (*this == q)
+            return *this;
+        if (size > 0)
+            delete[]arr;
+        size = q.size;
+        end = q.end;
+        start = q.start;
+        arr = new T[size]{};
+        for (int i = start; i != next(end); i++)
+            arr[i] = q.arr[i];
+        return *this;
+    }
 
     size_t Size() 
     {
@@ -84,7 +109,13 @@ public:
         return v;
     }
 
-    friend ostream& operator<<(ostream& out, TQueue<T>& q) {
+    T GetEl(int i)
+    {
+        return arr[i];
+    }
+
+    friend ostream& operator<<(ostream& out, TQueue<T>& q) 
+    {
         if (q.Is_Empty()) 
         {
             out << "Queue is empty!" << endl;

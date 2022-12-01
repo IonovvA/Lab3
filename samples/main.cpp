@@ -5,29 +5,23 @@ using namespace std;
 
 int main() 
 {
-    
-    /*TArithmeticExpression a1("5", number);
-    TArithmeticExpression a2("+", operation);
-    
-    cout << "Stack" << endl;
-    TStack<TArithmeticExpression> st(2);
-    st.Push(a1);
-    st.Push(a2);
-    cout << st << endl;
-
-    cout << "Queue" << endl;
-    TQueue<TArithmeticExpression> q(2);
-    q.Push(a1);
-    q.Push(a2);
-    cout << q << endl;
-    */
-    
-    /*
-    string s = "5 + 5\n";
-    TQueue<TArithmeticExpression> q;
-    q = Parser(s);
-    cout << q << endl;
-    */
-
+    string str = "(26 * 6 + 10 * 5 - 6) / 20";
+    cout << "Example: " << str << endl;
+    vector <TArithmeticExpression> pol;
+    try
+    {
+        pol = Obrat_Polska(str);
+    }
+    catch (exception ex)
+    {
+        cout << ex.what();
+        return 0;
+    }
+    cout << "Reverse Polish notation: " << endl;
+    for (int i = 0; i < pol.size(); i++) 
+    {
+        cout << pol[i];
+    }
+    cout << "Answer: " << Calculate(pol) << endl;
     return 0;
 }

@@ -6,13 +6,13 @@ using namespace std;
 template <typename T>
 class TStack
 {
-protected:
+private:
     T* pMem;
     size_t size;
     size_t top;
 
 public:
-    TStack(int _size)
+    TStack(int _size = 1)
     {
         if (_size <= 0)
         {
@@ -38,17 +38,6 @@ public:
             pMem = new T[size];
             copy(p.pMem, p.pMem + size, pMem);
         }
-    }
-
-    TStack(TStack<T>&& p)
-    {
-        size = p.size;
-        top = p.top;
-        pMem = p.pMem;
-
-        p.pMem = nullptr;
-        p.size = 0;
-        p.top = -1;
     }
 
     size_t Size()
@@ -83,11 +72,20 @@ public:
     {
         if (IsEmpty())
         {
-            throw "Stack is empty";
+            throw exception();
         }
-        T v = arr[top];
+        T v = pMem[top];
         top--;
         return v;
+    }
+
+    T Top()
+    {
+        if (IsEmpty())
+        {
+            throw exception("Stack is empty");
+        }
+        return pMem[top];
     }
 
     friend ostream& operator<<(ostream& out, TStack<T>& st) 

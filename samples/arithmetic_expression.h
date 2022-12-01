@@ -40,13 +40,13 @@ public:
     }
 };
 
-TQueue <TArithmeticExpression> Parser(string infix) 
+TQueue <TArithmeticExpression> Parser(string infix)
 {
 	TQueue<TArithmeticExpression> res;
 	infix += ' ';
 	int i = 0;
 	string tmp = "";
-	string operations = "+-*/()";
+	string operations = "+-/*()";
 	string separators = " \n\t";
 	int state = 0;
 	for (i = 0; i < infix.size(); i++)
@@ -54,14 +54,14 @@ TQueue <TArithmeticExpression> Parser(string infix)
 		char c = infix[i];
 		switch (state)
 		{
-		case 0: 
-			if (c >= '0' && c <= '9') 
+		case 0:
+			if (c >= '0' && c <= '9')
 			{
 				tmp = c;
 				state = 1;
 				break;
 			}
-			if (operations.find(c) >= 0)
+			if ((operations.find(c) >= 0)&(operations.find(c) <= 5))
 			{
 				tmp = c;
 				TArithmeticExpression a(tmp, operation);
@@ -70,14 +70,14 @@ TQueue <TArithmeticExpression> Parser(string infix)
 				break;
 			}
 			break;
-		case 1: 
-			if (c >= '0' && c <= '9') 
+		case 1:
+			if (c >= '0' && c <= '9')
 			{
 				tmp += c;
 				state = 1;
 				break;
 			}
-			if (operations.find(c) >= 0)
+			if ((operations.find(c) >= 0) & (operations.find(c) <= 5))
 			{
 				TArithmeticExpression a1(tmp, number);
 				res.Push(a1);
@@ -99,3 +99,114 @@ TQueue <TArithmeticExpression> Parser(string infix)
 	}
 	return res;
 };
+
+vector <TArithmeticExpression> Obrat_Polska(string infix)
+{
+	TQueue<TArithmeticExpression> q = Parser(infix);
+	vector <TArithmeticExpression> res;
+	int priority1;
+	int priority2;
+	string op = "+-/*";
+	TStack<TArithmeticExpression> st;
+	char c;
+	for (int i = 1; i < q.Size() + 1; i++)
+	{
+		TArithmeticExpression a = q.GetEl(i);
+		switch (a.GetType())
+		{
+		case operation:
+			c = a.GetString()[0];
+			switch (c)
+			{
+			case '(':
+				st.Push(a);
+				break;
+			case '+':case '-':case'*':case'/':
+				if (st.IsEmpty())
+				{
+					st.Push(a);
+					break;
+				}
+				priority1 = op.find(c) / 2;
+				while (!st.IsEmpty())
+				{
+					priority2 = op.find(st.Top().GetString()) / 2;
+					if (priority1 <= priority2)
+					{
+						res.push_back(st.Pop());
+					}
+					else
+					{
+						break;
+					}
+				}
+				st.Push(a);
+				break;
+			case ')':
+				while (true)
+				{
+					if (!st.IsEmpty())
+					{
+						if (st.Top().GetString() != "(")
+						{
+							res.push_back(st.Pop());
+						}
+						else
+						{
+							st.Pop();
+							break;
+						}
+					}
+					else
+					{
+						throw exception("Net (");
+					}
+				}
+			}
+			break;
+		case number:
+			res.push_back(a);
+			break;
+		}
+	}
+	while (st.IsEmpty() != true)
+	{
+		res.push_back(st.Pop());
+	}
+	return res;
+}
+
+double Calculate(vector<TArithmeticExpression>& v) 
+{
+	TStack<double> st;
+	for (TArithmeticExpression& a : v) 
+	{
+		if (a.GetType() == operation) 
+		{
+			double v1 = st.Pop();
+			double v2 = st.Pop();
+			if (a.GetString() == "+") 
+			{
+				st.Push(v2 + v1);
+			}
+			else if (a.GetString() == "-") 
+			{
+				st.Push(v2 - v1);
+			}
+			else if (a.GetString() == "*") 
+			{
+				st.Push(v2 * v1);
+			}
+			else 
+			{
+				st.Push(v2 / v1);
+			}
+		}
+		else 
+		{
+			int val = stoi(a.GetString());
+			st.Push(val);
+		}
+	}
+	return st.Pop();
+}
