@@ -7,16 +7,7 @@ int main()
 {
     string str = "(26 * 6 + 10 * 5 - 6) / 20";
     cout << "Example: " << str << endl;
-    vector <TArithmeticExpression> pol;
-    try
-    {
-        pol = Obrat_Polska(str);
-    }
-    catch (exception ex)
-    {
-        cout << ex.what();
-        return 0;
-    }
+    vector <TArithmeticExpression> pol = Obrat_Polska(str);
     cout << "Reverse Polish notation: " << endl;
     for (int i = 0; i < pol.size(); i++) 
     {

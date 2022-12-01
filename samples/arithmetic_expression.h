@@ -1,7 +1,6 @@
 ﻿#pragma once
 
 #include<string>
-#include <map>
 #include <vector>
 #include "queue.h"
 #include "stack.h"
@@ -87,7 +86,7 @@ TQueue <TArithmeticExpression> Parser(string infix)
 				state = 0;
 				break;
 			}
-			if (separators.find(c) >= 0)
+			if ((separators.find(c) >= 0) & (separators.find(c) <= 3))
 			{
 				TArithmeticExpression a(tmp, number);
 				res.Push(a);
@@ -156,10 +155,6 @@ vector <TArithmeticExpression> Obrat_Polska(string infix)
 							st.Pop();
 							break;
 						}
-					}
-					else
-					{
-						throw exception("Net (");
 					}
 				}
 			}

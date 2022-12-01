@@ -75,10 +75,11 @@ public:
     {
         if (Is_Full())
         {
-            int new_size = size * 2;
+            int new_size = size * 2 + 5;
             T* tmp = new T[new_size];
             int index = 1;
-            for (int i = start; i != next(end); i = next(i)) {
+            for (int i = start; i != next(end); i = next(i)) 
+            {
                 tmp[index] = arr[i];
                 index++;
             }
